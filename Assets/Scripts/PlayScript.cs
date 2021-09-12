@@ -8,14 +8,13 @@ public class PlayScript : MonoBehaviour
     [SerializeField]
     private GameObject Player;
 
-    [SerializeField]
-    private Camera _main;
+    public Camera _main;
 
     private Rigidbody rig;
 
     private Vector3 mouse_pos;
 
-    private const float max_rotate_degree = 30.0f;
+    private const float max_rotate_degree = 50.0f;
     private const float brake_bias = 0.1f;
 
     private float _max = 0;
@@ -24,32 +23,55 @@ public class PlayScript : MonoBehaviour
 
     public void SetParent(Player p) { pl = p; }
 
+    private CameraFllow cf;
+    public void SetCameraFollow(CameraFllow c) { cf = c; }
+
     // Start is called before the first frame update
     void Start()
     {
         rig = Player.GetComponent<Rigidbody>();
 
-        rig.AddForce(Vector3.right * 2, ForceMode.Impulse);
+        rig.AddForce(Vector3.up * 2, ForceMode.Impulse);
     }
 
     // Update is called once per frame
     void Update()
     {
-        //if(pl.ShootPlayer)
-        //{
-
-        //}
-
-        //　マウスポインタ座標取得
-        MousePoint();
-
-        // ベクトル変更
-        VectorChange();
-
-        // ブレーキ
-        if (Input.GetKey(KeyCode.Space))
+        //Debug.Log(!pl.ExistStar());
+        if (pl.ExistStar())
         {
-            BrakeSpeed();
+
+            //　マウスポインタ座標取得
+            MousePoint();
+
+            // ベクトル変更
+            VectorChange();
+
+            // ブレーキ
+            if (Input.GetKey(KeyCode.Space))
+            {
+                BrakeSpeed();
+            }
+
+            // 加速
+            if (Input.GetKey(KeyCode.B))
+            {
+
+            }
+        }
+        else
+        {
+
+            if (pl.cf.CommandView)
+            {
+
+                // 射出
+                if (Input.GetMouseButtonDown(0))
+                {
+                    Launch();
+                }
+
+            }
         }
     }
 
@@ -68,19 +90,19 @@ public class PlayScript : MonoBehaviour
 
     private void VectorChange()
     {
-        var forward = gameObject.transform.right;
+        var up = gameObject.transform.up;
         var pos = _main.WorldToScreenPoint(gameObject.transform.position);
         pos.z = 0;
         var PlayerToMousePointer = (mouse_pos - pos).normalized;
 
-        Vector3 rot = RotateToVector(forward, PlayerToMousePointer);
+        Vector3 rot = RotateToVector(up, PlayerToMousePointer);
 
         float det = rig.velocity.magnitude;
 
         rig.velocity = rot * det;
     }
 
-    private Vector3 RotateToVector(Vector3 from, Vector3 to)
+    public Vector3 RotateToVector(Vector3 from, Vector3 to)
     {
         float deg = Vector3.Angle(from, to);
         Vector3 cross = Vector3.Cross(from, to);
@@ -90,6 +112,18 @@ public class PlayScript : MonoBehaviour
 
         transform.rotation = q * rot;
 
-        return transform.right;
+        return transform.up;
+    }
+
+    private void Launch()
+    {
+        ResetCommand();
+    }
+
+
+    private void ResetCommand()
+    {
+        pl.cf.CommandView = false;
+        pl.RemoveCollisionStar();
     }
 }

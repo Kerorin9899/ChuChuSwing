@@ -75,9 +75,5 @@ public class Test : MonoBehaviour
 
         //this.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(first_SpaceVec * Mathf.Cos(rad), first_SpaceVec * Mathf.Sin(rad), 0);
         this.gameObject.GetComponent<Rigidbody>().velocity += vec;
-
-        //Debug.Log(this.gameObject.GetComponent<Rigidbody>().velocity.magnitude);
-
-        //Debug.Log(force_vec);
     }
 }

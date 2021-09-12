@@ -60,3 +60,8 @@ crashlytics-build.properties
 Icon?
 ehthumbs.db
 Thumbs.db
+
+#IgnoreTestScenes
+[Aa]ssets/TestSences/
+[Aa]ssets/Scripts/Test/
+
